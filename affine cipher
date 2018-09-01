@@ -1,0 +1,40 @@
+alphabet = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ ,.")
+modulus = len(alphabet)
+
+a = 5 ## a must be coprime with the modulus
+b = 13 ## b must not equal 1
+
+def egcd(a, b):
+if a == 0:
+return (b, 0, 1)
+else:
+g, y, x = egcd(b % a, a)
+return (g, x - (b // a) * y, y)
+
+def modinv(a, m):
+g, x, y = egcd(a, m)
+if g != 1:
+raise Exception('modular inverse does not exist')
+else:
+return x % m
+
+def encrypt(plaintext, a, b):
+ciphertext = ""
+
+for char in plaintext:
+c = alphabet[ ( ( alphabet.index(char) * a ) + b ) % modulus]
+ciphertext += c
+return ciphertext
+
+def decrypt(ciphertext, a, b):
+plaintext = ""
+
+for char in ciphertext:
+c = alphabet[ modinv( a, modulus ) * ( ( alphabet.index(char) ) - b ) % modulus]
+plaintext += c
+
+return plaintext
+
+plaintext = raw_input("plaintext: ")
+
+ciphertext = encrypt(plaintext, a, b)
